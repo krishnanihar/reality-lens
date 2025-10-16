@@ -1,0 +1,28 @@
+{
+  "name": "Reality Lens",
+  "short_name": "Reality Lens",
+  "description": "Air India's Reality Lens AI assistant with real-time camera and voice interaction",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#B91C1C",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "permissions": [
+    "camera",
+    "microphone"
+  ]
+}
