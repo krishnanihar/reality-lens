@@ -29,8 +29,10 @@ export class GeminiService {
     this.initializeModel();
   }
 
-  private initializeModel() {
+  private async initializeModel() {
     try {
+      console.log(`[Gemini] Initializing with model: ${this.config.model}`);
+
       this.model = this.genAI.getGenerativeModel({
         model: this.config.model,
         generationConfig: {
@@ -52,13 +54,37 @@ export class GeminiService {
         ],
       });
 
+      // Test the connection by sending a test message
+      console.log('[Gemini] Testing API connection...');
+      await this.testConnection();
+
+      console.log('[Gemini] Connection successful! ✅');
       this.isConnected = true;
       this.retryCount = 0;
       this.startHeartbeat();
       this.notifyConnection(true);
       this.processMessageQueue();
     } catch (error) {
+      console.error('[Gemini] Initialization failed:', error);
+      if (error instanceof Error) {
+        console.error('[Gemini] Error message:', error.message);
+        console.error('[Gemini] Error stack:', error.stack);
+      }
       this.handleConnectionError(error);
+    }
+  }
+
+  /**
+   * Test the API connection with a simple message
+   */
+  private async testConnection(): Promise<void> {
+    try {
+      const result = await this.chat.sendMessage('test');
+      const response = await result.response;
+      await response.text(); // Just verify we can get a response
+    } catch (error) {
+      console.error('[Gemini] Connection test failed:', error);
+      throw error;
     }
   }
 
