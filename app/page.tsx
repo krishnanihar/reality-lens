@@ -38,6 +38,9 @@ export default function Home() {
   useEffect(() => {
     const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
 
+    console.log('Initializing Reality Lens...');
+    console.log('API Key loaded:', apiKey ? `Yes (${apiKey.substring(0, 10)}...)` : 'No');
+
     if (!apiKey) {
       console.error('Gemini API key not found. Please set NEXT_PUBLIC_GEMINI_API_KEY in .env.local');
       return;
@@ -51,16 +54,21 @@ export default function Home() {
     }
 
     // Initialize Gemini Service
+    // Using gemini-pro for better stability (gemini-2.0-flash-exp might not be available for all API keys)
     const gemini = new GeminiService({
       apiKey,
-      model: 'gemini-2.0-flash-exp',
+      model: 'gemini-pro-vision',
       temperature: 0.7,
       systemPrompt: getSystemPrompt('both', 'pre-flight', sessionId),
     });
 
     gemini.onConnection((isConnected) => {
+      console.log('Gemini connection status:', isConnected ? 'Connected ✅' : 'Disconnected ❌');
       setConnected(isConnected);
       setConnectionQuality(isConnected ? 'good' : 'offline');
+      if (isConnected) {
+        addMessage('assistant', 'Hello! I\'m Reality Lens AI. I can see through your camera and hear your voice. How can I help you today?', 'text');
+      }
     });
 
     gemini.onMessage((response) => {
@@ -81,8 +89,11 @@ export default function Home() {
 
     gemini.onError((error) => {
       console.error('Gemini error:', error);
+      console.error('Error details:', error.message);
       setIsProcessing(false);
       setConnectionQuality('poor');
+      // Show error to user
+      addMessage('assistant', `Connection error: ${error.message}. Please check your API key and internet connection.`, 'text');
     });
 
     setGeminiService(gemini);
