@@ -1,0 +1,61 @@
+{
+  "app": {
+    "title": "रियलिटी लेंस",
+    "subtitle": "एआई विज़न असिस्टेंट"
+  },
+  "controls": {
+    "camera": "कैमरा",
+    "microphone": "माइक्रोफ़ोन",
+    "keyboard": "कीबोर्ड",
+    "settings": "सेटिंग्स"
+  },
+  "prompts": {
+    "cameraPermission": "विज़ुअल फ़ीचर्स का उपयोग करने के लिए कैमरा एक्सेस की अनुमति दें",
+    "micPermission": "वॉइस इनपुट के लिए माइक्रोफ़ोन एक्सेस की अनुमति दें",
+    "processing": "प्रोसेसिंग...",
+    "listening": "सुन रहे हैं...",
+    "speaking": "बोल रहे हैं...",
+    "connecting": "एआई से कनेक्ट हो रहे हैं...",
+    "connected": "कनेक्ट हो गया",
+    "tapToStart": "शुरू करने के लिए टैप करें"
+  },
+  "errors": {
+    "cameraNotAvailable": "कैमरा उपलब्ध नहीं है",
+    "micNotAvailable": "माइक्रोफ़ोन उपलब्ध नहीं है",
+    "connectionLost": "कनेक्शन खो गया। पुनः प्रयास कर रहे हैं...",
+    "voiceNotSupported": "इस ब्राउज़र में वॉइस समर्थित नहीं है",
+    "permissionDenied": "अनुमति अस्वीकृत। कृपया सेटिंग्स में सक्षम करें।",
+    "genericError": "कुछ गड़बड़ हो गई। कृपया पुनः प्रयास करें।"
+  },
+  "ar": {
+    "objectDetected": "वस्तु का पता चला",
+    "confidence": "विश्वास",
+    "navigating": "नेविगेट कर रहे हैं",
+    "distance": "दूरी",
+    "meters": "मीटर",
+    "kilometers": "किमी"
+  },
+  "settings": {
+    "language": "भाषा",
+    "preferredCamera": "पसंदीदा कैमरा",
+    "front": "सामने",
+    "back": "पीछे",
+    "voiceEnabled": "वॉइस सक्षम",
+    "continuousListening": "निरंतर सुनना",
+    "textSize": "टेक्स्ट आकार",
+    "normal": "सामान्य",
+    "large": "बड़ा",
+    "arMode": "एआर मोड",
+    "performanceMode": "परफ़ॉर्मेंस मोड",
+    "high": "उच्च",
+    "medium": "मध्यम",
+    "low": "कम"
+  },
+  "navigation": {
+    "straight": "सीधे जाएं",
+    "turnLeft": "बाएं मुड़ें",
+    "turnRight": "दाएं मुड़ें",
+    "turnAround": "पीछे मुड़ें",
+    "youHaveArrived": "आप पहुंच गए हैं"
+  }
+}

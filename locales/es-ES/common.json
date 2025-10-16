@@ -1,0 +1,61 @@
+{
+  "app": {
+    "title": "Reality Lens",
+    "subtitle": "Asistente de Visión IA"
+  },
+  "controls": {
+    "camera": "Cámara",
+    "microphone": "Micrófono",
+    "keyboard": "Teclado",
+    "settings": "Configuración"
+  },
+  "prompts": {
+    "cameraPermission": "Permitir acceso a la cámara para usar funciones visuales",
+    "micPermission": "Permitir acceso al micrófono para entrada de voz",
+    "processing": "Procesando...",
+    "listening": "Escuchando...",
+    "speaking": "Hablando...",
+    "connecting": "Conectando a IA...",
+    "connected": "Conectado",
+    "tapToStart": "Toca para comenzar"
+  },
+  "errors": {
+    "cameraNotAvailable": "Cámara no disponible",
+    "micNotAvailable": "Micrófono no disponible",
+    "connectionLost": "Conexión perdida. Reintentando...",
+    "voiceNotSupported": "Voz no compatible en este navegador",
+    "permissionDenied": "Permiso denegado. Por favor, habilita en configuración.",
+    "genericError": "Algo salió mal. Por favor, inténtalo de nuevo."
+  },
+  "ar": {
+    "objectDetected": "Objeto detectado",
+    "confidence": "Confianza",
+    "navigating": "Navegando a",
+    "distance": "Distancia",
+    "meters": "metros",
+    "kilometers": "km"
+  },
+  "settings": {
+    "language": "Idioma",
+    "preferredCamera": "Cámara Preferida",
+    "front": "Frontal",
+    "back": "Trasera",
+    "voiceEnabled": "Voz Habilitada",
+    "continuousListening": "Escucha Continua",
+    "textSize": "Tamaño de Texto",
+    "normal": "Normal",
+    "large": "Grande",
+    "arMode": "Modo AR",
+    "performanceMode": "Modo de Rendimiento",
+    "high": "Alto",
+    "medium": "Medio",
+    "low": "Bajo"
+  },
+  "navigation": {
+    "straight": "Continúa recto",
+    "turnLeft": "Gira a la izquierda",
+    "turnRight": "Gira a la derecha",
+    "turnAround": "Da la vuelta",
+    "youHaveArrived": "Has llegado"
+  }
+}

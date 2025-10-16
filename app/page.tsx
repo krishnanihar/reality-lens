@@ -6,16 +6,16 @@ import { ControlsBar } from '@/components/ControlsBar';
 import { MessageDisplay } from '@/components/MessageDisplay';
 import { CameraPreview } from '@/components/CameraPreview';
 import { TextInput } from '@/components/TextInput';
-import { GeminiService } from '@/lib/gemini-service';
+import { GeminiLiveClient } from '@/lib/gemini-live-client';
 import { CameraService } from '@/lib/camera-service';
 import { VoiceService } from '@/lib/voice-service';
 import { usePreferences } from '@/hooks/usePreferences';
-import { generateSessionId, getSystemPrompt, checkBrowserSupport } from '@/lib/utils';
+import { generateSessionId, checkBrowserSupport } from '@/lib/utils';
 import type { Message, CameraState, AudioState, ConnectionQuality, ViewMode } from '@/types';
 
 export default function Home() {
   // Services
-  const [geminiService, setGeminiService] = useState<GeminiService | null>(null);
+  const [geminiService, setGeminiService] = useState<GeminiLiveClient | null>(null);
   const [cameraService, setCameraService] = useState<CameraService | null>(null);
   const [voiceService, setVoiceService] = useState<VoiceService | null>(null);
 
@@ -36,15 +36,7 @@ export default function Home() {
 
   // Initialize services
   useEffect(() => {
-    const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
-
     console.log('Initializing Reality Lens...');
-    console.log('API Key loaded:', apiKey ? `Yes (${apiKey.substring(0, 10)}...)` : 'No');
-
-    if (!apiKey) {
-      console.error('Gemini API key not found. Please set NEXT_PUBLIC_GEMINI_API_KEY in .env.local');
-      return;
-    }
 
     // Check browser support
     const support = checkBrowserSupport();
@@ -53,47 +45,60 @@ export default function Home() {
       return;
     }
 
-    // Initialize Gemini Service
-    // Using gemini-2.5-flash - latest stable model (Oct 2025) with multimodal support
-    const gemini = new GeminiService({
-      apiKey,
-      model: 'gemini-2.5-flash',
-      temperature: 0.7,
-      systemPrompt: getSystemPrompt('both', 'pre-flight', sessionId),
+    // Initialize Gemini Live Client
+    // Connects to local backend server which proxies to Gemini Live API
+    const serverUrl = process.env.NEXT_PUBLIC_WS_SERVER_URL || 'ws://localhost:3001';
+    console.log('Connecting to WebSocket server:', serverUrl);
+
+    const gemini = new GeminiLiveClient({
+      serverUrl,
+      onConnection: (isConnected) => {
+        console.log('Gemini Live connection status:', isConnected ? 'Connected ✅' : 'Disconnected ❌');
+        setConnected(isConnected);
+        setConnectionQuality(isConnected ? 'good' : 'offline');
+        if (isConnected) {
+          addMessage('assistant', 'Hello! I\'m Reality Lens AI with live vision. I can see what you see in real-time. How can I help you today?', 'text');
+        }
+      },
+      onResponse: (text, audio) => {
+        setIsProcessing(false);
+
+        if (text) {
+          addMessage('assistant', text, 'text');
+
+          // Speak response if voice is enabled
+          if (preferences.voiceEnabled && voiceService) {
+            // If we have audio from Gemini, use that, otherwise use local TTS
+            if (audio) {
+              // TODO: Play audio from Gemini
+              console.log('Received audio from Gemini (playback not implemented yet)');
+              voiceService.speak(text); // Fallback to local TTS for now
+            } else {
+              voiceService.speak(text);
+            }
+          }
+
+          // Show as overlay if in camera view
+          if (currentView === 'camera') {
+            setOverlayMessage(text);
+            setTimeout(() => setOverlayMessage(''), 5000);
+          }
+        }
+      },
+      onError: (error) => {
+        console.error('Gemini Live error:', error);
+        setIsProcessing(false);
+        setConnectionQuality('poor');
+        // Show error to user
+        addMessage('assistant', `Connection error: ${error}. Please check the server connection.`, 'text');
+      },
     });
 
-    gemini.onConnection((isConnected) => {
-      console.log('Gemini connection status:', isConnected ? 'Connected ✅' : 'Disconnected ❌');
-      setConnected(isConnected);
-      setConnectionQuality(isConnected ? 'good' : 'offline');
-      if (isConnected) {
-        addMessage('assistant', 'Hello! I\'m Reality Lens AI. I can see through your camera and hear your voice. How can I help you today?', 'text');
-      }
-    });
-
-    gemini.onMessage((response) => {
-      setIsProcessing(false);
-      addMessage('assistant', response.text, 'text');
-
-      // Speak response if voice is enabled
-      if (preferences.voiceEnabled && voiceService) {
-        voiceService.speak(response.text);
-      }
-
-      // Show as overlay if in camera view
-      if (currentView === 'camera') {
-        setOverlayMessage(response.text);
-        setTimeout(() => setOverlayMessage(''), 5000);
-      }
-    });
-
-    gemini.onError((error) => {
-      console.error('Gemini error:', error);
-      console.error('Error details:', error.message);
-      setIsProcessing(false);
-      setConnectionQuality('poor');
-      // Show error to user
-      addMessage('assistant', `Connection error: ${error.message}. Please check your API key and internet connection.`, 'text');
+    // Connect to server
+    gemini.connect().catch((error) => {
+      console.error('Failed to connect to server:', error);
+      setConnectionQuality('offline');
+      addMessage('assistant', 'Failed to connect to Reality Lens server. Please make sure the backend server is running.', 'text');
     });
 
     setGeminiService(gemini);
@@ -112,9 +117,12 @@ export default function Home() {
         setCameraState(state);
       });
 
-      camera.onFrame(() => {
+      camera.onFrame((frameData) => {
         // Frame capture callback - frames are captured at 1 FPS
-        // We don't send frames automatically, only when user initiates interaction
+        // Send frames continuously to Gemini Live when camera is active
+        if (gemini && frameData) {
+          gemini.sendVideoFrame(frameData);
+        }
       });
 
       camera.onError((error) => {
@@ -184,16 +192,8 @@ export default function Home() {
 
     setIsProcessing(true);
 
-    // If camera is active, send both voice and current frame
-    if (cameraState === 'active' && cameraService) {
-      const frame = cameraService.captureSnapshot();
-      if (frame) {
-        geminiService.sendMultimodal(transcript, frame);
-        return;
-      }
-    }
-
-    // Otherwise, send just the text
+    // With Gemini Live, we're already streaming video frames
+    // Just send the text prompt - Gemini will correlate it with the video stream
     geminiService.sendText(transcript);
   };
 
@@ -204,16 +204,8 @@ export default function Home() {
     addMessage('user', text, 'text');
     setIsProcessing(true);
 
-    // If camera is active, send both text and current frame
-    if (cameraState === 'active' && cameraService) {
-      const frame = cameraService.captureSnapshot();
-      if (frame) {
-        geminiService.sendMultimodal(text, frame);
-        return;
-      }
-    }
-
-    // Otherwise, send just the text
+    // With Gemini Live, we're already streaming video frames
+    // Just send the text prompt - Gemini will correlate it with the video stream
     geminiService.sendText(text);
   };
 

@@ -1,51 +1,102 @@
-# Reality Lens - Phase 1: Foundation
+# Reality Lens - Phase 2: Gemini Live + XR Overlays
 
-Air India's Reality Lens AI assistant with real-time camera and voice interaction powered by Gemini Live.
+Air India's Reality Lens AI assistant with real-time camera streaming, live AI vision, and augmented reality overlays powered by Gemini Live API.
 
-## Features
+## 🎯 What's New in Phase 2
 
-- **Real-time Camera Streaming**: Captures and processes camera feed at 1 FPS
+- **Gemini Live API**: Real-time bidirectional streaming with continuous video processing
+- **WebSocket Architecture**: Browser → Backend Server → Gemini Live API
+- **Continuous Vision**: AI sees what you see in real-time (not just on-demand snapshots)
+- **Backend Server**: Node.js/Express server for API proxy and connection management
+- **Live Responses**: Near-instant AI responses as you move and interact with environment
+- **Audio Streaming**: Bidirectional audio support (future: Gemini's voice responses)
+
+## 🚀 Features
+
+- **Real-time Camera Streaming**: Continuous 1 FPS video streaming to AI
 - **Voice Input/Output**: Natural voice conversations with AI using Web Speech APIs
-- **Gemini Live Integration**: Multimodal AI responses combining vision and voice
+- **Gemini Live Integration**: True multimodal AI with live vision capabilities
 - **Progressive Web App**: Installable on mobile devices with offline support
 - **Responsive UI**: Air India branded interface with real-time status indicators
+- **WebSocket Communication**: Low-latency bidirectional streaming
 
-## Tech Stack
+## 🛠 Tech Stack
 
+### Frontend
 - **Framework**: Next.js 14 with App Router
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
-- **AI**: Google Gemini 2.0 Flash Exp
 - **PWA**: next-pwa
 - **Icons**: lucide-react
+- **Communication**: WebSocket (native)
 
-## Prerequisites
+### Backend
+- **Runtime**: Node.js 18+
+- **Framework**: Express
+- **WebSocket**: ws library
+- **AI**: Google Gemini Live API (gemini-2.0-flash-exp)
+- **Language**: TypeScript
+
+## 📋 Prerequisites
 
 - Node.js 18+
 - A Gemini API key from [Google AI Studio](https://makersuite.google.com/app/apikey)
-- HTTPS for camera/microphone access (use ngrok or deploy to Vercel)
+- HTTPS for camera/microphone access (use ngrok or deploy to production)
 
-## Getting Started
+## 🚀 Getting Started
 
 ### 1. Clone and Install
 
 ```bash
 cd reality-lens
+
+# Install frontend dependencies
 npm install
+
+# Install backend dependencies
+cd server
+npm install
+cd ..
 ```
 
 ### 2. Configure Environment Variables
 
-Create a `.env.local` file in the root directory:
+**Frontend** - Create `.env.local` in root:
 
 ```bash
 cp .env.local.example .env.local
 ```
 
-Edit `.env.local` and add your Gemini API key:
+Edit `.env.local`:
 
 ```env
-NEXT_PUBLIC_GEMINI_API_KEY=your_actual_api_key_here
+# WebSocket server URL (backend)
+NEXT_PUBLIC_WS_SERVER_URL=ws://localhost:3001
+```
+
+**Backend** - Create `.env` in server directory:
+
+```bash
+cp server/.env.example server/.env
+```
+
+Edit `server/.env`:
+
+```env
+# Required: Gemini API Key
+GEMINI_API_KEY=your_actual_api_key_here
+
+# Server Configuration
+PORT=3001
+NODE_ENV=development
+
+# CORS Configuration
+FRONTEND_URL=http://localhost:3000
+
+# Gemini Live API Configuration
+GEMINI_MODEL=gemini-2.0-flash-exp
+GEMINI_TEMPERATURE=0.7
+GEMINI_MAX_TOKENS=1000
 ```
 
 ### 3. Run Development Server

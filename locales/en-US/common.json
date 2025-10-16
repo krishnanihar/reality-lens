@@ -1,0 +1,61 @@
+{
+  "app": {
+    "title": "Reality Lens",
+    "subtitle": "AI Vision Assistant"
+  },
+  "controls": {
+    "camera": "Camera",
+    "microphone": "Microphone",
+    "keyboard": "Keyboard",
+    "settings": "Settings"
+  },
+  "prompts": {
+    "cameraPermission": "Allow camera access to use visual features",
+    "micPermission": "Allow microphone access for voice input",
+    "processing": "Processing...",
+    "listening": "Listening...",
+    "speaking": "Speaking...",
+    "connecting": "Connecting to AI...",
+    "connected": "Connected",
+    "tapToStart": "Tap to start"
+  },
+  "errors": {
+    "cameraNotAvailable": "Camera not available",
+    "micNotAvailable": "Microphone not available",
+    "connectionLost": "Connection lost. Retrying...",
+    "voiceNotSupported": "Voice not supported in this browser",
+    "permissionDenied": "Permission denied. Please enable in settings.",
+    "genericError": "Something went wrong. Please try again."
+  },
+  "ar": {
+    "objectDetected": "Object detected",
+    "confidence": "Confidence",
+    "navigating": "Navigating to",
+    "distance": "Distance",
+    "meters": "meters",
+    "kilometers": "km"
+  },
+  "settings": {
+    "language": "Language",
+    "preferredCamera": "Preferred Camera",
+    "front": "Front",
+    "back": "Back",
+    "voiceEnabled": "Voice Enabled",
+    "continuousListening": "Continuous Listening",
+    "textSize": "Text Size",
+    "normal": "Normal",
+    "large": "Large",
+    "arMode": "AR Mode",
+    "performanceMode": "Performance Mode",
+    "high": "High",
+    "medium": "Medium",
+    "low": "Low"
+  },
+  "navigation": {
+    "straight": "Go straight",
+    "turnLeft": "Turn left",
+    "turnRight": "Turn right",
+    "turnAround": "Turn around",
+    "youHaveArrived": "You have arrived"
+  }
+}
