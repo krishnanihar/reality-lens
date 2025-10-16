@@ -54,10 +54,10 @@ export default function Home() {
     }
 
     // Initialize Gemini Service
-    // Using gemini-pro for better stability (gemini-2.0-flash-exp might not be available for all API keys)
+    // Using gemini-pro for better stability and compatibility
     const gemini = new GeminiService({
       apiKey,
-      model: 'gemini-pro-vision',
+      model: 'gemini-pro',
       temperature: 0.7,
       systemPrompt: getSystemPrompt('both', 'pre-flight', sessionId),
     });
